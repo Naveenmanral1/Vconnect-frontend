@@ -20,6 +20,9 @@ const Sidebar = ({ isExpanded, toggleSidebar, shouldNavigate }) => {
     } else {
       navigate('/add-profile');
     }
+    if (isExpanded) {
+      toggleSidebar();
+    }
   };
 
   useEffect(() => {
@@ -159,11 +162,19 @@ const Sidebar = ({ isExpanded, toggleSidebar, shouldNavigate }) => {
               </div>
 
               <div className="flex items-center gap-2 px-2 rounded cursor-pointer text-gray-500">
-                <BiSpreadsheet size={24} />
-                {isExpanded && (
-                  <span className="text-gray-700 font-medium">My Timeline</span>
-                )}
+                <div
+                  className="flex items-center gap-2  rounded cursor-pointer"
+                  onClick={() => handleNavigation(`/timeline/${currentUser._id}`)}
+                >
+                  <BiSpreadsheet size={24} />
+                  {isExpanded && (
+                    <span className="text-gray-700 font-medium">My Timeline</span>
+                  )}
+                </div>
               </div>
+
+              
+
             </div>
           </div>
 

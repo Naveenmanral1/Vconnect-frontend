@@ -61,7 +61,7 @@ function Like({ isLiked, likesCount = 0, postId, size }) {
 
         <div className="border-t border-gray-300 my-4"></div>
 
-        <div className="flex items-center justify-between text-gray-600 ml-16 mr-16">
+        <div className="flex items-center justify-between text-gray-600 ml-4 sm:ml-16 sm:mr-16">
           <div className="flex items-center gap-2">
             <BiSolidLike
               size={24}
