@@ -62,7 +62,7 @@ function Navbar({ toggleSidebar }) {
         <div className="flex items-center ">
           <img
             onClick={handleAvatarClick}
-            src={user?.avatar}
+            src={user?.avatar || 'https://shorturl.at/aA6Ek'}
             alt="Profile"
             className="w-10 h-10 rounded-full"
           />

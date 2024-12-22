@@ -30,7 +30,7 @@ function ActivityFeed() {
         <div className="flex items-center p-4 ">
           <div className="flex items-center ">
             <img
-              src={user?.avatar}
+              src={user?.avatar || 'https://shorturl.at/aA6Ek'}
               alt="Profile"
               className="w-12 h-12 rounded-full"
             />
