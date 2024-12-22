@@ -9,6 +9,8 @@ const api = axios.create({
     }
 });
 
+console.log( import.meta.env.VITE_BASE_URL)
+
 api.interceptors.response.use(
     (response) => response, 
     async (error) => {
