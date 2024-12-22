@@ -2,7 +2,7 @@ import axios from "axios";
 import { refreshAccessTokenAPI } from "./authAPI";
 
 const api = axios.create({
-    baseURL : 'http://localhost:8000/api/v1',
+    baseURL : import.meta.env.VITE_BASE_URL,
     withCredentials:true,
     headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`  
