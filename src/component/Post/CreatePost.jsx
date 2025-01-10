@@ -6,35 +6,35 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createPost, updatePost } from '../../store/postSlice';
 
 function CreatePost({ post }) {
-  const { register, handleSubmit, reset, setValue, trigger } = useForm({
+  const { register, handleSubmit, reset, setValue, formState , watch} = useForm({
     defaultValues: {
-      description: post?.description || '',
+      description: post?.payload?.description || '',
+      image : null,
     },
   });
 
-  const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const { loading } = useSelector((state) => state.posts);
   const currentUser = useSelector((state) => state.auth.userData);
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
+  const imageFile = watch("image")
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    if(post?.payload?.image){
+      setImagePreview(post.payload.image);
+    }
+  },[post])
+  
+  useEffect(() => {
+    if(imageFile && imageFile[0]){
+      const file = imageFile[0];
       const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result);
-        setValue('image', reader.result);
-      };
+      reader.onload = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     }
-  };
-
-  const removeImage = () => {
-    setImage(null);
-    setValue('image', null);
-  };
+  },[imageFile])
 
   const onSubmit = async (data) => {
     try {
@@ -44,7 +44,7 @@ function CreatePost({ post }) {
         data.description || post?.payload?.description
       );
 
-      if (data.image?.[0]) {
+      if (data.image && data.image[0]) {
         postData.append('image', data.image[0]);
       } else if (!post) {
         console.error('Image is required for a new post');
@@ -68,8 +68,6 @@ function CreatePost({ post }) {
   useEffect(() => {
     if (post) {
       setValue('description', post.payload.description);
-      setValue('image', post.payload.image || null);
-      setImage(post.payload.image || null);
     }
   }, [post, setValue]);
 
@@ -105,22 +103,25 @@ function CreatePost({ post }) {
             {...register('description')}
           ></textarea>
 
-          {image || post?.payload?.image ? (
+          {imagePreview && (
             <div className="relative">
               <img
-                src={image || post.payload.image}
+                src={imagePreview}
                 alt="Uploaded"
                 className="w-full max-h-48 sm:max-h-60 object-left object-contain rounded-lg"
               />
               <button
                 type="button"
-                onClick={removeImage}
+                onClick={() => {
+                  setValue("image" , null);
+                  setImagePreview(null);
+                }}
                 className="absolute top-2 right-2 text-white p-1 rounded-full"
               >
                 ✖
               </button>
             </div>
-          ) : null}
+          ) }
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <label className="flex items-center cursor-pointer">
@@ -128,9 +129,9 @@ function CreatePost({ post }) {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleImageUpload}
                 {...register('image', {
-                  required: !post && 'Image is required',
+                  validate : (files) => 
+                    post || files?.length > 0 || "Image is required",
                 })}
               />
               <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200">
